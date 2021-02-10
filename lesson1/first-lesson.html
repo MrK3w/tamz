@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsenui.css">
+ <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css">
+ <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>
+ <script src="https://unpkg.com/jquery/dist/jquery.min.js"></script>
+ <script src="js/greeter.js"></script>
+</head>
+<body>
+<ons-page id="page1">
+    <ons-toolbar>
+        <div class="center">Page 1</div>
+    </ons-toolbar>
+    <p id="p1"> This is the first page.</p>
+    <p>
+        <ons-input id="msg" modifier="underbar" placeholder="Message " float></ons-input>
+    </p>
+    <ons-button id="push-button-1">Click me</ons-button>
+    <ons-button id="push-button-2">Click me</ons-button>
+    <ons-button id="push-button-3" onClick="alert('Hello World!')">Click me</ons-button>
+    <ons-button id="push-button-4" onClick="ons.notification.alert('Hello World!')">Click me</ons-button>
+</ons-page>
+</body>
+</html>
