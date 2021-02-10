@@ -21,5 +21,16 @@
     <ons-button id="push-button-3" onClick="alert('Hello World!')">Click me</ons-button>
     <ons-button id="push-button-4" onClick="ons.notification.alert('Hello World!')">Click me</ons-button>
 </ons-page>
+
+<template id="dialog.html">
+    <ons-dialog id="my-dialog">
+        <div style="text-align: center; padding: 20px;">
+        <p id="p1"> </p>
+        <p>
+            <ons-button onclick="hideDialog('my-dialog')">Close</ons-button>"
+        </p>
+        </div>
+    </ons-dialog>
+</template>
 </body>
 </html>
