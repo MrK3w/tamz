@@ -41,7 +41,7 @@ var showTemplateDialog = function(msg) {
 
     if (dialog)
     {
-        $("#pl").text('Greetings: ' + msg + " !");
+        $("#p1").text('Greetings: ' + msg + " !");
         dialog.show();
     }
     else
