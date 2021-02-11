@@ -49,7 +49,7 @@ var showTemplateDialog = function(msg) {
         ons.createElement('dialog.html', {append: true})
         .then(function(dialog)
         {
-            $("#pl").text('Greetings: ' + msg + " !");
+            $("#p1").text('Greetings: ' + msg + " !");
             dialog.show();
         });
     }
