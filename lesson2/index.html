@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Terminy</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsenui.css">
+    <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css">
+    <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>
+    <script src="https://unpkg.com/jquery/dist/jquery.min.js"></script>
+<script > 
+
+//pomocne pole
+var names = ["kozoroh", "Vodnář","Ryby","Beran","Býk","Blíženci","Rak","Lev","Panna","Váhy","Štír","Střelec"]; 
+var namesND = ["kozoroh", "vodnar","ryby","beran","byk","blizenci","rak","lev","panna","vahy","stir","strelec"]; 
+var breakDate = [21,20,21,21,21,22,23,24,23,23,23,22];
+var globalID = 1;
+var globalOneDay = 24*60*60*1000;
+
+document.addEventListener('init', function(event) {
+    var page = event.target;
+    
+    // po nacteni stranky se zobrazi aktualni datum a posle se do funkce setDays
+    if (page.id === 'page1') 
+    {
+        var actualDate = new Date();
+        document.getElementById("dateInput").valueAsDate = actualDate; 
+        
+        var endSemDate = new Date();
+        endSemDate.setFullYear(endSemDate.getFullYear(), 4, 15); //0 - leden   
+        dayUntilSemEnd = (endSemDate-actualDate)/globalOneDay; // je mozno vypocitat jako (endSemDate - actualDate)/globalOneDay
+        
+        var tamz_presentation = new Date();
+        tamz_presentation.setFullYear(endSemDate.getFullYear(),3,20);
+        dayUntilPresentation = (tamz_presentation-actualDate)/globalOneDay;
+        
+        var tamz_zkouska = new Date();
+        tamz_zkouska.setFullYear(endSemDate.getFullYear(),4,10);
+        dayUntilZkouska = (tamz_zkouska-actualDate)/globalOneDay;
+        //TODO 1. upravit aby se zobrazovaly  dny
+        //dulezite datumy si muzete upravit podle sebe, 
+        //nemusi se jednat o TAMZ, ale naprikald datum zubare, festivalu atd.
+        //spravnost vysledku muzete overit zde: https://www.timeanddate.com/date/durationresult.html 
+        $('#endSemText').text("Konec semestru: " + Math.round(dayUntilSemEnd));
+        $('#tamzText1').text("TAMZ prezentace: " + Math.round(dayUntilPresentation));  
+        $('#tamzText2').text("TAMZ zkouška: " + Math.round(dayUntilZkouska));  
+              
+        setDays(actualDate);
+    } 
+ 
+});
+
+
+function setDays(inputDate)
+{
+    var myDate = new Date(inputDate);   
+    var year = myDate.getFullYear();
+    var month = myDate.getMonth()+1; //January is 0
+    var day = myDate.getDate(); 
+    ons.notification.alert("year: " + year + " month: " + month + " day: " + day);
+    var myBirthday = new Date(year,month-1,day);
+    var actualDate = new Date();
+    days_until_birthday = Math.ceil((myDate - actualDate)/globalOneDay);
+    //TODO 2. upravit aby se zobrazovaly spravne dny do narozenin 
+    // rozdil jako v TODO 1
+    $('#bdText').text("Narozeniny: " + days_until_birthday);
+
+    //TODO 3. bonus - bere v potaz pouze mesice - nutne upravit i na dny
+    globalID = month
+    if(day < breakDate[globalID-1])   
+        globalID--;
+    var path = namesND[globalID]+".png";   
+    $("#zodImg").attr({ "src": path });
+    $('#zodiacName').text(names[globalID]);
+    
+}
+
+// klik na obrazek znameni zobrazeni aktualni horoskop
+function loadURL()
+{
+    var name = namesND[globalID];
+    window.open("https://www.horoskopy.cz/"+name);
+    //TODO 4. bonus - zobrazeni aktualniho horoskopu
+    //napr. spustit url ve tvaru "http://www.horoskopy.cz/" + name
+    //nebo "https://www.denik.cz/horoskopy/zverokruh/" + name + ".html"
+    //napoveda: zde hledejte sekci Window Location Assign: https://www.w3schools.com/js/js_window_location.asp
+    
+    //kdo by to chtěl mít stějné jako ve video ukázce, tak je to mírně náročnější 
+    //ve video ukázce mám tento úkol vyřešen pomocí onsen dialogu + HTML iframe elementu - který je v tomto dialogu umístěn
+    //tímto způsobem to řešit nemusíste, ale uvádím to zde, jako nápovědo, kdyby měl někdo zájem i o tohle řešení 
+     
+}
+
+</script>    
+</head>
+<body>
+<ons-page id="page1">
+    
+    <ons-toolbar>
+      <div class="center" style="font-size:150%">Termíny</div>
+    </ons-toolbar>
+    
+    <ons-card>
+        <div style="font-size:150%; text-align: center; padding-top: 35px;">
+            Zadej datum narození
+        </div>
+        <p style="text-align: center"> 
+            <input style="font-size:200%" id="dateInput" type="date" modifier="underbar material" onchange="setDays(this.value);"> 
+        </p>
+    </ons-card>
+    
+    <ons-card>
+        <div id="bdText" style="font-size:130%; padding-top: 15px;">
+            Narozeniny: --- 
+        </div>
+        <div id="tamzText1" style="font-size:130%; padding-top: 15px;">
+            TAMZ prezentace: ---  
+        </div>  
+        <div id="tamzText2" style="font-size:130%; padding-top: 15px;">
+            TAMZ zkouška: ---  
+        </div>      
+        <div id="endSemText" style="font-size:130%; padding-top: 15px;">
+            Konec semestru: ---  
+        </div>   
+    </ons-card>  
+    
+    <ons-card>
+        <p style="text-align: center">
+            <img onclick="loadURL()" id="zodImg" style="width: 20%; height: auto">
+        </p>
+        <div id="zodiacName" style="font-size:130%; text-align: center;">
+            znamení 
+        </div>     
+    </ons-card>  
+</ons-page>
+</body>
+</html>
