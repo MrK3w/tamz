@@ -1,0 +1,66 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsenui.css">
+  <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css">
+  <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>
+  <script src="https://unpkg.com/jquery/dist/jquery.min.js"></script>
+ <script > 
+
+//NAPOVEDA: https://onsen.io/v2/api/js/ons-range.html
+//https://www.w3schools.com/jsref/event_oninput.asp
+
+function range1(val)
+{
+    //ons.notification.alert(val);
+    var myElement = $("#divRange");
+    myElement.text(val);     
+}
+
+function range2()
+{
+    var range = $("#range_1");
+    console.log(range.val());
+    var myElement = $("#divRange");
+    myElement.text(range.val());     
+}
+
+</script>  
+  
+</head>
+<body>
+
+<ons-page id="page1">
+    <ons-toolbar>
+      <div class="center">Range Example</div>
+    </ons-toolbar>
+    
+  <ons-list>
+    
+    <ons-list-item tappable>
+      <div class="center">
+      Range - 1      
+        <ons-range modifier="material" id="range_1" style="width: 100%;" value="75" min="30" max="130" step="5" oninput="range2()"></ons-range>   
+        
+        <div id="divRange">
+            75
+        </div>         
+            
+        </div>       
+         
+    </ons-list-item> 
+    
+    <ons-list-item>
+        <ons-button modifier="material" id="push-button" onclick="range2()">range</ons-button>
+    </ons-list-item>    
+    
+  </ons-list>
+
+</ons-page>
+
+
+
+</body>
+</html>
+

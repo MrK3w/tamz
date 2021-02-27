@@ -1,0 +1,65 @@
+<html><head>
+    <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsenui.css">
+    <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css">
+    <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no">
+    <script src="https://unpkg.com/jquery/dist/jquery.min.js"></script>
+   <script> 
+  
+  //NAPOVEDA: https://onsen.io/v2/api/js/ons-radio.html
+  
+  function radio1(val)
+  {
+      var options = new Object();
+      options.title = "Radio Value";
+      ons.notification.alert(val, options);
+  }
+  
+  function radio2()
+  {  
+      //https://www.tutorialspoint.com/jqueryexamples/selector_name.htm  
+      var selector = $('input[name="radioGender"]:checked'); 
+      if(selector) console.log(selector.val()); 
+  }
+  
+  </script>  
+    
+  </head>
+  <body data-device-back-button-handler-id="0" style="touch-action: pan-y; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+  
+  <ons-page id="page1" class="page" shown=""><ons-toolbar class="toolbar"><div class="center toolbar__center toolbar__title">Radio Example</div></ons-toolbar><div class="page__background"></div><div class="page__content">
+      
+      
+    <ons-list class="list">
+      
+      <ons-list-item tappable="" class="list-item"><label for="radio_1" class="center list-item__center">
+          A
+        </label><label class="left list-item__left">
+          <ons-radio modifier="material" name="radioGender" input-id="radio_1" value="A" onchange="radio1('A')" class="radio-button radio-button--material">
+        <input type="radio" class="radio-button__input radio-button--material__input" id="radio_1" name="radioGender" value="A">
+        <span class="radio-button__checkmark radio-button--material__checkmark"></span>
+      </ons-radio>
+        </label></ons-list-item>
+      
+      <ons-list-item tappable="" class="list-item"><label for="radio_2" class="center list-item__center">
+          B
+        </label><label class="left list-item__left">
+          <ons-radio modifier="material" name="radioGender" input-id="radio_2" value="B" onchange="radio1('B')" class="radio-button radio-button--material">
+        <input type="radio" class="radio-button__input radio-button--material__input" id="radio_2" name="radioGender" value="B">
+        <span class="radio-button__checkmark radio-button--material__checkmark"></span>
+      </ons-radio>
+        </label></ons-list-item>
+      
+      <ons-list-item class="list-item"><div class="center list-item__center">
+          <ons-button modifier="material" id="push-button" onclick="radio2()" class="button button--material">radio</ons-button>
+      </div></ons-list-item>    
+      
+    </ons-list>
+  
+  </div></ons-page>
+  
+  
+  
+  
+  
+  
+  </body></html>

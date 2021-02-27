@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsenui.css">
+  <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css">
+  <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>
+  <script src="https://unpkg.com/jquery/dist/jquery.min.js"></script>
+ <script > 
+
+var rangeHeight, rangeWidth, gender, age, name, bmi, color, text;
+
+function height_range(val)
+{
+    //ons.notification.alert(val);
+    var myElement = $("#heightRange");
+    rangeHeight = val;
+    myElement.text(rangeHeight);     
+}
+
+function weight_range(val)
+{
+    //ons.notification.alert(val);
+    var myElement = $('#widthRange');
+    rangeWidth = val
+    myElement.text(rangeWidth);     
+}
+
+function my_button_click()
+{
+    var newItem = document.createElement('ons-list-item'); //item
+    var dateObj = new Date();
+    var month = dateObj.getUTCMonth() + 1; //months from 1-12
+    var day = dateObj.getUTCDate();
+    var year = dateObj.getUTCFullYear();
+    newItem.innerText = year+"-"+month+"-"+day+"|"+name+"| BMI: "+bmi; //obsah
+    document.getElementById('BMIList').appendChild(newItem);
+}
+
+function user_name(val)
+{  
+  name = val
+}   
+  
+function user_age(val)
+{
+  age = val
+}
+
+function gender_radio(val)
+{
+  gender = val
+}
+
+function bmi_index()
+{
+  var height = rangeHeight/100;
+  bmi = Math.round(rangeWidth / (height*height));
+  if (bmi < 18.5) {
+    color = "red";
+    text = "your bmi is too low. " + bmi + ".Is in bad shape!";
+  }
+  else if (bmi < 24.9) {
+    color = "green";
+    text = "your bmi is: " + bmi + " and is alright!";
+  }
+  else if (bmi < 29) {
+    color = "orange";
+    text = "your bmi is:" + bmi + " and is not as good as it should be!";
+  }
+  else{
+    color = "red";
+    text = "your bmi is: " + bmi + ".Very bad!";
+  }
+}
+
+function check_values()
+{
+  if (rangeHeight == undefined ) 
+  {
+    range1 = document.getElementById('height_range');
+    rangeHeight = range1.value;
+  }
+  if (rangeWidth == undefined)
+  {
+    range1 = document.getElementById('width_range');
+    rangeWidth = range1.value;
+  }
+  if (gender == undefined)
+  {
+    gender = 'Male';
+  }
+  if (age == undefined)
+  {
+    age = 0;
+  }
+  bmi_index();
+}
+
+document.addEventListener('init', function(event) {
+
+    var page = event.target;   
+    if (page.id === 'page1') 
+    {
+        $("#push-button").on("click", function(e) 
+        {
+            var myNavigator = document.getElementById('myNavigator');
+            myNavigator.pushPage('page2.html');     
+        });
+    } 
+    else if (page.id === 'page2') 
+    {   
+        $("#itemName").text("Name: " + name)
+        $("#itemAge").text("Age: "+ age);
+        $("#itemGender").text("Gender: " + gender);
+        $("#itemH").text("Height: " + rangeHeight +"cm");
+        $("#itemW").text("Weight: "+ rangeWidth+"kg");
+        $("#BMI").text("BMI Index: "+text).css("color",color);
+
+    }    
+  
+});
+
+</script>  
+  
+</head>
+<body>
+<ons-navigator swipeable animation="slide"   id="myNavigator" page="page1.html"></ons-navigator>
+
+<template id="page1.html">
+  <ons-page id="page1">
+    <ons-toolbar>
+      <div class="center">Body Mass Index</div>
+    </ons-toolbar>
+
+  <ons-card>  
+  <ons-list>
+    
+    <ons-list-item tappable>
+      <ons-input id="myName" type="text" modifier="underbar" onchange="user_name(this.value)"  placeholder="Username" float></ons-input>
+  </ons-list-item>   
+    <ons-list-item tappable>
+        <ons-input id="age" type="text" modifier="underbar" onchange="user_age(this.value)"  placeholder="Age" float></ons-input>
+    </ons-list-item>   
+    <ons-list-item tappable>
+      <label class="left">
+        <ons-radio modifier="material" name="radioGender" input-id="radio_1" value="Male" oninput="gender_radio('Male')" checked></ons-radio>
+      </label>
+      <label for="radio_1" class="center">
+        <ons-icon icon="md-male"  size="30px"> </ons-icon> Male
+      </label>
+    </ons-list-item>
+    
+    <ons-list-item tappable>
+      <label class="left">
+        <ons-radio modifier="material" name="radioGender" input-id="radio_2" value="Female" oninput="gender_radio('Female')"></ons-radio>
+      </label>
+      <label for="radio_2" class="center">
+        <ons-icon icon="md-female"  size="30px"> </ons-icon> Female
+
+      </label>
+    </ons-list-item>
+    
+    <ons-list-item tappable>
+        <div class="center">
+        Height(cm):   
+          <ons-range modifier="material" id="height_range" style="width: 100%;" value="0" min="0" max="220" step="1" oninput="height_range(this.value)"></ons-range>   
+          <div id="heightRange">
+              0
+          </div>         
+              
+          </div>       
+           
+      </ons-list-item> 
+
+      <ons-list-item tappable>
+        <div class="center">
+        Weight(kg):   
+          <ons-range modifier="material" id="width_range" style="width: 100%;" value="0" min="0" max="200" step="1" oninput="weight_range(this.value)"></ons-range>   
+          <div id="widthRange">
+              0
+          </div>         
+              
+          </div>       
+           
+      </ons-list-item> 
+
+    <ons-list-item>
+        <div class="left"> 
+        <ons-button modifier="material" id="push-button" onclick="check_values();my_button_click()">CALCULATE</ons-button>
+        </div> 
+    </ons-list-item>
+    
+  </ons-list>
+  <ons-list id="BMIList">
+  </ons-list>
+  </ons-card>   
+  </ons-page>
+  
+</template>
+
+<template id="page2.html">
+  <ons-page id="page2">
+    <ons-toolbar>
+      <div class="left"><ons-back-button>Page 1</ons-back-button></div>
+      <div class="center"></div>
+    </ons-toolbar>
+
+    <ons-card>
+  
+    <div class="title">
+      BMI Result: 
+      <p id="bmi"> </p>
+    </div>
+    <div class="content">
+      <ons-list>
+        <ons-list-item><p id="BMI"></p></ons-list-item>
+        <ons-list-item><p id="itemName"> </p></ons-list-item>
+        <ons-list-item><p id="itemAge"> </p></ons-list-item>
+        <ons-list-item><p id="itemGender"> </p></ons-list-item>
+        <ons-list-item><p id="itemH"></p></ons-list-item>
+        <ons-list-item><p id="itemW"></p></ons-list-item>
+
+      </ons-list>
+    </div>
+    
+  </ons-card>       
+  </ons-page>
+</template>
+</body>
+</html>
