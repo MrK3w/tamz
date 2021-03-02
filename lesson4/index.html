@@ -1,0 +1,186 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">  
+  <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsenui.css">
+  <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css">
+  <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>
+  <script src="https://unpkg.com/jquery/dist/jquery.min.js"></script>
+ <script > 
+
+var idNumber;
+//TODO 3 - po zvoleni daneho ukolu zobrazit dialog s možností odstranit úkol
+//TODO 5 - vytvorit objekt ukol a do uloziste ukladat a nacitat tento objekt pomoci JSON 
+  
+
+document.addEventListener('init', function(event)
+{
+    showTodo();    
+});
+
+// function test()
+// {
+//     var obj = {firstName:"ahoj",lastName:"objekte",age:50,eyeColor:"blue"};
+//     var myJSON = JSON.stringify(obj);
+//     localStorage.setItem("1",myJSON);
+//     // localStorage.setItem("2","Ahoj TAMZ");
+//     var myObjR = JSON.parse(localStorage.getItem("1"));
+//     console.log(myObjR.firstName + " " + myObjR.lastName);
+//     console.log(localStorage.getItem("2"));
+// }
+
+function addTask()
+{
+
+    var myDate = new Date();
+    //vytvori klic pro ukladani zaznamu do local storage
+    //klic muzete vytvorit i vlastni/jiny
+    var myKey = myDate.getTime();
+    //zaznam, ktery bude ulozen pod klicem
+    var todoText = $("#taskName").val();
+    var dateInText = setDays();
+    var obj = {text:todoText,date:dateInText};
+    var myJSON = JSON.stringify(obj);
+
+    if(todoText.length)
+    {
+        localStorage.setItem(myKey,myJSON);       
+    }
+    
+    showTodo();
+}
+
+function setDays()
+{
+    var inputDate = document.getElementById('dateInput');
+    var myDate = new Date(inputDate.value);   
+    var year = myDate.getFullYear();
+    var month = myDate.getMonth()+1; //January is 0
+    var day = myDate.getDate(); 
+    return day+"|"+month+"|"+year;
+}
+
+function removeAll()
+{
+    localStorage.clear();
+    location.reload();
+}
+
+function itemClick(id)
+{
+    idNumber = id;
+    document.getElementById('dialog-3').show();
+     
+      
+}
+
+function showTodo()
+{
+    $("#todoList").empty();
+    for (var i = 0; i < localStorage.length; i++)
+    {
+        var onsItem= document.createElement('ons-list-item');
+        
+        //ziskam klic pro pristup k zaznamu
+        var myKey = localStorage.key(i);
+        onsItem.setAttribute('onclick', "itemClick("+myKey+")"); 
+        var myObjR = JSON.parse(localStorage.getItem(myKey));
+        console.log(myObjR.firstName + " " + myObjR.lastName);
+        onsItem.innerHTML = myObjR.text + " " + myObjR.date; 
+        onsItem.setAttribute('modifier', "tappable");
+        document.getElementById('todoList').appendChild(onsItem);               
+    }
+}
+function taskDelete(id)
+{
+    localStorage.removeItem(idNumber);  
+    document.getElementById('dialog-3').hide();
+    location.reload();
+}
+
+function taskClose()
+{
+    document.getElementById('dialog-3').hide();
+}
+
+function removeDialog()
+{
+    document.getElementById('dialog-2').show();
+}
+
+function removeCloseDialog()
+{
+    document.getElementById('dialog-2').hide();
+}
+
+function addDialog()
+{
+    document.getElementById('dialog-1').show();
+}
+
+function closeDialog()
+{
+    document.getElementById('dialog-1').hide();
+}
+
+</script>  
+  
+</head>
+<body>
+<ons-navigator swipeable id="myNavigator" page="page1.html"></ons-navigator>
+
+<template id="page1.html">
+    <ons-page id="page1">
+        <ons-toolbar>
+            <div class="center">Local Storage</div>
+        </ons-toolbar>
+
+        <p>TODO List</p>
+
+        <ons-list id="todoList">
+        </ons-list>
+            <ons-button modifier="material" id="push-button2" onclick="addDialog()">Add Task</ons-button>
+            <ons-button modifier="material" id="push-button3" onclick="removeDialog()">Remove All</ons-button>
+    </ons-page>
+</template>
+
+<ons-dialog id="dialog-1">
+
+    <div style="text-align: center; padding: 10px;">
+
+    <p>
+      <ons-input id="taskName" modifier="underbar" placeholder="Task Name" float></ons-input>
+    </p>       
+    <p><ons-button modifier="material" id="push-button4" onclick="addTask()">Add Task</ons-button></p> 
+    <p><ons-button modifier="material" id="push-button5" onclick="closeDialog()">Close</ons-button></p>       
+    <p style="text-align: center"> 
+        <input style="font-size:200%" id="dateInput" type="date" value="2021-03-02" modifier="underbar material" onchange="setDays(this.value);"> 
+    </p>
+    </div>
+    
+</ons-dialog>
+
+
+<ons-dialog id="dialog-2">
+
+    <div style="text-align: center; padding: 10px;">
+    <p>Do you really want to clear your storage?</p>
+    <p><ons-button style="background-color:rgb(0, 126, 63);margin-left: 15px;" modifier="material" id="push-button4" onclick="removeAll()">Confirm</ons-button>
+    <ons-button style="background-color:rgb(143, 1, 1);margin-left: 50px;" modifier="material" id="push-button5" onclick="removeCloseDialog()">Close</ons-button></p>       
+    </div>
+    
+</ons-dialog>
+
+<ons-dialog id="dialog-3">
+
+    <div style="text-align: center; padding: 10px;">
+    <p>Do you really want to delete a task?</p>
+    <p><ons-button style="background-color:rgb(0, 126, 63);margin-left: 15px;" modifier="material" id="push-button4" onclick="taskDelete()">Confirm</ons-button>
+    <ons-button style="background-color:rgb(143, 1, 1);margin-left: 50px;" modifier="material" id="push-button5" onclick="taskClose()">Close</ons-button></p>       
+    </div>
+    
+</ons-dialog>
+</body>
+</html>
+
