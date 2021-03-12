@@ -7,125 +7,10 @@
   <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css">
   <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>
   <script src="https://unpkg.com/jquery/dist/jquery.min.js"></script>
- <script > 
+  <script src="task.js"></script>
+  <script src="utilities.js"></script>
+  <script src="main.js"></script>
 
-var idNumber;
-//TODO 3 - po zvoleni daneho ukolu zobrazit dialog s možností odstranit úkol
-//TODO 5 - vytvorit objekt ukol a do uloziste ukladat a nacitat tento objekt pomoci JSON 
-  
-
-document.addEventListener('init', function(event)
-{
-    showTodo();    
-});
-
-// function test()
-// {
-//     var obj = {firstName:"ahoj",lastName:"objekte",age:50,eyeColor:"blue"};
-//     var myJSON = JSON.stringify(obj);
-//     localStorage.setItem("1",myJSON);
-//     // localStorage.setItem("2","Ahoj TAMZ");
-//     var myObjR = JSON.parse(localStorage.getItem("1"));
-//     console.log(myObjR.firstName + " " + myObjR.lastName);
-//     console.log(localStorage.getItem("2"));
-// }
-
-function addTask()
-{
-
-    var myDate = new Date();
-    //vytvori klic pro ukladani zaznamu do local storage
-    //klic muzete vytvorit i vlastni/jiny
-    var myKey = myDate.getTime();
-    //zaznam, ktery bude ulozen pod klicem
-    var todoText = $("#taskName").val();
-    var dateInText = setDays();
-    var obj = {text:todoText,date:dateInText};
-    var myJSON = JSON.stringify(obj);
-
-    if(todoText.length)
-    {
-        localStorage.setItem(myKey,myJSON);       
-    }
-    
-    showTodo();
-}
-
-function setDays()
-{
-    var inputDate = document.getElementById('dateInput');
-    var myDate = new Date(inputDate.value);   
-    var year = myDate.getFullYear();
-    var month = myDate.getMonth()+1; //January is 0
-    var day = myDate.getDate(); 
-    return day+"|"+month+"|"+year;
-}
-
-function removeAll()
-{
-    localStorage.clear();
-    location.reload();
-}
-
-function itemClick(id)
-{
-    idNumber = id;
-    document.getElementById('dialog-3').show();
-     
-      
-}
-
-function showTodo()
-{
-    $("#todoList").empty();
-    for (var i = 0; i < localStorage.length; i++)
-    {
-        var onsItem= document.createElement('ons-list-item');
-        
-        //ziskam klic pro pristup k zaznamu
-        var myKey = localStorage.key(i);
-        onsItem.setAttribute('onclick', "itemClick("+myKey+")"); 
-        var myObjR = JSON.parse(localStorage.getItem(myKey));
-        console.log(myObjR.firstName + " " + myObjR.lastName);
-        onsItem.innerHTML = myObjR.text + " " + myObjR.date; 
-        onsItem.setAttribute('modifier', "tappable");
-        document.getElementById('todoList').appendChild(onsItem);               
-    }
-}
-function taskDelete(id)
-{
-    localStorage.removeItem(idNumber);  
-    document.getElementById('dialog-3').hide();
-    location.reload();
-}
-
-function taskClose()
-{
-    document.getElementById('dialog-3').hide();
-}
-
-function removeDialog()
-{
-    document.getElementById('dialog-2').show();
-}
-
-function removeCloseDialog()
-{
-    document.getElementById('dialog-2').hide();
-}
-
-function addDialog()
-{
-    document.getElementById('dialog-1').show();
-}
-
-function closeDialog()
-{
-    document.getElementById('dialog-1').hide();
-}
-
-</script>  
-  
 </head>
 <body>
 <ons-navigator swipeable id="myNavigator" page="page1.html"></ons-navigator>
@@ -136,27 +21,75 @@ function closeDialog()
             <div class="center">Local Storage</div>
         </ons-toolbar>
 
+        <p> <ons-switch id="showFavorites" onchange="showTodo()"></ons-switch> Show favorites</p>
+       
         <p>TODO List</p>
-
         <ons-list id="todoList">
         </ons-list>
-            <ons-button modifier="material" id="push-button2" onclick="addDialog()">Add Task</ons-button>
-            <ons-button modifier="material" id="push-button3" onclick="removeDialog()">Remove All</ons-button>
+
+    
+
+        <ons-fab position="bottom left" style="background-color:#00c020"onclick="addDialog('dialog-1');CurrentDays();">
+            <ons-icon icon="md-plus" style="color:#FFFF"></ons-icon>
+          </ons-fab>
+          <ons-fab position="bottom right"style="background-color:#9E2011" onclick="addDialog('dialog-2')">
+            <ons-icon icon="md-minus" style="color:#FFFF" ></ons-icon>
+          </ons-fab>
     </ons-page>
 </template>
 
 <ons-dialog id="dialog-1">
-
     <div style="text-align: center; padding: 10px;">
-
     <p>
-      <ons-input id="taskName" modifier="underbar" placeholder="Task Name" float></ons-input>
-    </p>       
-    <p><ons-button modifier="material" id="push-button4" onclick="addTask()">Add Task</ons-button></p> 
-    <p><ons-button modifier="material" id="push-button5" onclick="closeDialog()">Close</ons-button></p>       
+      <ons-input id="taskName" modifier="underbar" value="" placeholder="Task Name" float></ons-input>
+    </p>     
     <p style="text-align: center"> 
-        <input style="font-size:200%" id="dateInput" type="date" value="2021-03-02" modifier="underbar material" onchange="setDays(this.value);"> 
+        <input style="font-size:200%" id="dateInput" type="date"  modifier="underbar material" onchange="setDays(this.value);"> 
+    </p>  
+    <p>
+        <textarea id="Notes" class="textarea textarea--solid" rows="3" placeholder="Notes" style="background-color:rgb(196, 196, 196)"></textarea>
+    </p>      
+    
+    <p>
+            <ons-list>
+            <ons-list-header>TASK COLOR</ons-list-header>
+            <ons-list-item tappable>
+                <label class="left">
+                  <ons-radio name="color" input-id="radio-blue"  value="blue"></ons-radio>
+                </label>
+                <label for="radio-blue" class="center" style="color:blue">
+                  Blue
+                </label>
+              </ons-list-item>
+              <ons-list-item tappable>
+                <label class="left">
+                  <ons-radio name="color" input-id="radio-black" value="black"></ons-radio>
+                </label>
+                <label for="radio-black" class="center" style="color:black">
+                  Black
+                </label>
+              </ons-list-item>
+              <ons-list-item tappable>
+                <label class="left">
+                  <ons-radio name="color" input-id="radio-red" value="red"></ons-radio>
+                </label>
+                <label for="radio-red" class="center" style="color:red">
+                  Red
+                </label>
+              </ons-list-item>
+            </ons-list>
     </p>
+    <ons-list>
+      <p>Add to favorites<ons-switch id="favorites"></ons-switch></p>
+    </ons-list> 
+    
+    <p>
+        Priority<br>
+        <ons-range modifier="material" id="task-important-range" style="width: 100%;" value="1" min="1" max="3"></ons-range>   
+    </p>
+    <p><ons-button modifier="material" id="push-button4" onclick="addTask();reload()">Add Task</ons-button></p> 
+    <p><ons-button modifier="material" id="push-button5" onclick="closeDialog('dialog-1');reload()">Close</ons-button></p>       
+    
     </div>
     
 </ons-dialog>
@@ -167,7 +100,7 @@ function closeDialog()
     <div style="text-align: center; padding: 10px;">
     <p>Do you really want to clear your storage?</p>
     <p><ons-button style="background-color:rgb(0, 126, 63);margin-left: 15px;" modifier="material" id="push-button4" onclick="removeAll()">Confirm</ons-button>
-    <ons-button style="background-color:rgb(143, 1, 1);margin-left: 50px;" modifier="material" id="push-button5" onclick="removeCloseDialog()">Close</ons-button></p>       
+    <ons-button style="background-color:rgb(143, 1, 1);margin-left: 50px;" modifier="material" id="push-button5" onclick="closeDialog('dialog-2')">Close</ons-button></p>       
     </div>
     
 </ons-dialog>
@@ -176,8 +109,10 @@ function closeDialog()
 
     <div style="text-align: center; padding: 10px;">
     <p>Do you really want to delete a task?</p>
-    <p><ons-button style="background-color:rgb(0, 126, 63);margin-left: 15px;" modifier="material" id="push-button4" onclick="taskDelete()">Confirm</ons-button>
-    <ons-button style="background-color:rgb(143, 1, 1);margin-left: 50px;" modifier="material" id="push-button5" onclick="taskClose()">Close</ons-button></p>       
+    <p id="currentTask"></p>
+    <p><ons-button style="background-color:rgb(0, 126, 63)" modifier="material" id="push-button4" onclick="taskDelete()">Confirm</ons-button>
+       <ons-button style="background-color:rgb(86, 73, 202)" modifier="material" id="push-button6" onclick="addDialog('dialog-1');closeDialog('dialog-3');EditTask();">SHOW/EDIT</ons-button>
+    <ons-button style="background-color:rgb(143, 1, 1)" modifier="material" id="push-button5" onclick="closeDialog('dialog-3')">Close</ons-button></p>       
     </div>
     
 </ons-dialog>
