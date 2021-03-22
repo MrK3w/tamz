@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8"> 
+  <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsenui.css">
+  <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css">
+  <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>
+  <script src="https://unpkg.com/jquery/dist/jquery.min.js"></script>
+ <script > 
+
+
+//TODO 1 Základní verze převodníku bez argumentů (datum, jazyk) hotov
+//TODO 2 Využití argumentů datum, jazyk 
+//TODO 3 Využití rozšířeného listu s filtrem
+//TODO 4 Využití sse event stream
+
+class Currency {
+    constructor(country_label, curr_label,unit,code,rate) {
+      this.country_label = country_label;
+      this.curr_label = curr_label;
+      this.unit = unit;
+      this.code = code;
+      this.rate = rate;
+    }
+  }
+
+var curList = [];
+var urlCNB = "http://linedu.vsb.cz/~mor03/TAMZ/cnb_json.php";
+var currentId;
+
+document.addEventListener('init', function(event)
+{
+    if (event.target.id === 'page1')
+    {
+        loadCNB();
+        //https://www.w3schools.com/jquery/event_keyup.asp   
+    }
+
+});
+
+$('#CZK').keyup(function() {
+    console.log("changed");
+});
+
+function loadCNB()
+{
+    $.getJSON( urlCNB, function( json )
+    {
+        for(var i = 0; i < json.data.length; i++)
+        {
+           $("#myP").append(json.data[i].country_label + " - ");
+           var myCurrency = new Currency(json.data[i].country_label, json.data[i].curr_label,json.data[i].unit,json.data[i].code,json.data[i].rate);
+           curList.push(myCurrency);
+        }                  
+    }); 
+    
+    //console.log(curList);   
+}
+
+function other_to_czk()
+{
+    document.getElementById('CZK').value = ((document.getElementById('CUR').value * curList[currentId].rate)/curList[currentId].unit).toFixed(4);
+}
+
+function czk_to_other()
+{
+    document.getElementById('CUR').value = ((document.getElementById('CZK').value / curList[currentId].rate)*curList[currentId].unit).toFixed(4);
+}
+
+function addDialog()
+{
+    document.getElementById('dialog-1').show();
+    $("#onsList").empty();
+    for (var i = 0; i < curList.length; i++)
+    {
+        var onsItem= document.createElement('ons-list-item');
+        var todoText = curList[i].country_label;   
+        onsItem.innerHTML = todoText; 
+        onsItem.setAttribute('modifier', "tappable");
+        onsItem.setAttribute('onclick', 'setCountry('+i+')');
+        document.getElementById('onsList').appendChild(onsItem);               
+    }    
+}
+
+function setCountry(id)
+{
+    currentId = id;
+    document.getElementById('dialog-1').hide();
+    $("#push-button1").text("-" + curList[id].country_label + "-");
+    
+}
+
+function closeDialog()
+{
+    document.getElementById('dialog-1').hide();
+}
+</script>  
+  
+</head>
+<body>
+<ons-navigator swipeable id="myNavigator" page="page1.html"></ons-navigator>
+
+<template id="page1.html">
+    <ons-page id="page1">
+        <ons-toolbar>
+            <div class="center">CNB Convertor</div>
+        </ons-toolbar>
+                <p style="text-align: center"> CZK </p>
+                <p style="text-align: center"> <ons-input id="CZK" onkeyup="czk_to_other()" modifier="underbar material"></ons-input> </p>
+               
+                <p style="text-align: center" id="curP"> CUR
+                <p style="text-align: center"> <ons-input id="CUR" onkeyup="other_to_czk()" modifier="underbar material"></ons-input> </p>
+                
+                <p style="text-align: center">
+                <ons-button modifier="material" id="push-button1" onclick="addDialog();">
+                    Select Currency
+                </ons-button>         
+                </p>
+                <p style="text-align: center" id="myP">
+                </p>
+    </ons-page>   
+</template>
+
+<ons-dialog id="dialog-1">
+
+  <ons-carousel style="width: 100%; height: 400px">
+      <ons-carousel-item>     
+      <ons-page>
+                 
+       <ons-list id="onsList">       
+       </ons-list>
+       
+       </ons-page>
+      </ons-carousel-item>
+    </ons-carousel>  
+    
+</ons-dialog>
+
+</body>
+</html>
