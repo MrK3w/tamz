@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css">
   <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>
   <script src="https://unpkg.com/jquery/dist/jquery.min.js"></script>
+  <link rel="stylesheet" href="style.css">
  <script > 
 
 
@@ -54,12 +55,14 @@ function prepareLink()
     else language = 'lang=cs';
     urlCNB ="http://linedu.vsb.cz/~mor03/TAMZ/cnb_json.php" + "?"+language+"&"+"date="+myDate;
     loadCNB();
+    console.log(urlCNB);
 }
 
 function changeDate() {
+    
     prepareLink();
-    var myText = curList[currentId].country_label + " " + curList[currentId].rate;
-    document.getElementById("curP").innerHTML = myText;
+    
+   
     czk_to_other();
 }
 
@@ -100,11 +103,11 @@ function loadCNB()
         }
         var myText = curList[currentId].country_label + " " + curList[currentId].rate;
            $("#push-button1").text(myText);
-
+    document.getElementById("curP").innerHTML = myText;
 
     }); 
     
-    //console.log(curList);   
+    ///console.log(curList);   
 }
 
 function filtering(value)
@@ -197,7 +200,7 @@ function closeDialog()
   <ons-carousel style="width: 100%; height: 400px">
       <ons-carousel-item>     
       <ons-page>
-        <ons-search-input
+        <ons-search-input style="width: 253px"
       placeholder="Search"
       onkeyup="filtering(this.value)"
     ></ons-search-input>
