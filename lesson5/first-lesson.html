@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsenui.css">
+ <link rel="stylesheet" href="https://unpkg.com/onsenui/css/onsen-css-components.min.css">
+ <script src="https://unpkg.com/onsenui/js/onsenui.min.js"></script>
+ <script src="https://unpkg.com/jquery/dist/jquery.min.js"></script>
+ <script src="main.js"></script>
+</head>
+<body>
+<ons-page id="page1">
+    <ons-toolbar>
+        <div class="center">Page 1</div>
+    </ons-toolbar>
+    <p id="first-paragraph"> Methods</p>
+    <p id="p1"></p>
+    <p>
+        <ons-input id="url" modifier="underbar" placeholder="url "  value="https://homel.vsb.cz/~mor03/TAMZ/TAMZ.php"float></ons-input>
+    </p>
+    <p>
+        <ons-input id="login" modifier="underbar" placeholder="login " float></ons-input>
+    </p>
+    <ons-button id="get-key" onclick="prepareURL()">Get code</ons-button>
+    <ons-button id="send-key" onclick="prepareToken()">Send code</ons-button>
+    <p id ="final-paragraph"> </p>
+</ons-page>
+</body>
+</html>

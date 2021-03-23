@@ -32,15 +32,44 @@ document.addEventListener('init', function(event)
 {
     if (event.target.id === 'page1')
     {
+        CurrentDays();
+        prepareLink();
         loadCNB();
         //https://www.w3schools.com/jquery/event_keyup.asp   
     }
 
 });
 
-$('#CZK').keyup(function() {
-    console.log("changed");
-});
+function prepareLink()
+{
+    var myDate = setDays();
+    var language =  document.getElementById('languages').checked;
+    if (language == true) language = 'lang=en';
+    else language = 'lang=cs';
+    urlCNB ="http://linedu.vsb.cz/~mor03/TAMZ/cnb_json.php" + "?"+language+"&"+"date="+myDate;
+}
+
+function CurrentDays()
+{
+  document.getElementById('dateInput').value = new Date().toISOString().slice(0, 10);
+}
+
+function setDays()
+{
+    var inputDate = document.getElementById('dateInput');
+    var myDate = new Date(inputDate.value);   
+    var year = myDate.getFullYear();
+    var month = myDate.getMonth()+1; //January is 0
+    var day = myDate.getDate(); 
+    if (day.toString().length == 1) {
+      day = "0"+day;
+    }
+    if (month.toString().length == 1) {
+      month = "0"+month;
+    }
+    return year+"-"+month+"-"+day;
+}
+
 
 function loadCNB()
 {
@@ -51,7 +80,10 @@ function loadCNB()
            $("#myP").append(json.data[i].country_label + " - ");
            var myCurrency = new Currency(json.data[i].country_label, json.data[i].curr_label,json.data[i].unit,json.data[i].code,json.data[i].rate);
            curList.push(myCurrency);
-        }                  
+           currentId = 0;
+           var myText = curList[currentId].country_label + " " + curList[currentId].rate;
+           $("#push-button1").text(myText);
+        }                 
     }); 
     
     //console.log(curList);   
@@ -73,20 +105,22 @@ function addDialog()
     $("#onsList").empty();
     for (var i = 0; i < curList.length; i++)
     {
-        var onsItem= document.createElement('ons-list-item');
-        var todoText = curList[i].country_label;   
-        onsItem.innerHTML = todoText; 
+        var onsItem= document.createElement('ons-list-item'); 
+        onsItem.innerHTML =i + "|" + curList[i].country_label + "|" +curList[i].curr_label + "|"  + curList[i].rate;    
         onsItem.setAttribute('modifier', "tappable");
         onsItem.setAttribute('onclick', 'setCountry('+i+')');
         document.getElementById('onsList').appendChild(onsItem);               
     }    
+   
 }
 
 function setCountry(id)
 {
     currentId = id;
     document.getElementById('dialog-1').hide();
-    $("#push-button1").text("-" + curList[id].country_label + "-");
+    var myText = curList[id].country_label + " " + curList[id].rate;
+    $("#push-button1").text(myText);
+    document.getElementById("curP").innerHTML = myText;
     
 }
 
@@ -110,8 +144,12 @@ function closeDialog()
                
                 <p style="text-align: center" id="curP"> CUR
                 <p style="text-align: center"> <ons-input id="CUR" onkeyup="other_to_czk()" modifier="underbar material"></ons-input> </p>
-                
+                <p style="text-align: center"> 
+                    <input style="font-size:200%" id="dateInput" type="date"  modifier="underbar material" onchange="prepareLink();czk_to_other()"> 
+                </p>  
+                <p style="text-align: center;">  <ons-switch id="languages" onchange="prepareLink();czk_to_other()"> </ons-switch>CZ/EN</p>
                 <p style="text-align: center">
+                   
                 <ons-button modifier="material" id="push-button1" onclick="addDialog();">
                     Select Currency
                 </ons-button>         
